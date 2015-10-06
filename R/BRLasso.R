@@ -1,6 +1,6 @@
-#' Bootstrap ranking LASSO method.
+#' Bootstrap ranking LASSO model.
 #'
-#' This function performs a bootstrap ranking LASSO Logistic regression model for variable selection.
+#' This function performs a LASSO logistic regression model using a bootstrap ranking procedure.
 #'
 #' @param x the predictor matrix
 #' @param y the response variable, a factor object with values of 0 and 1 
@@ -10,17 +10,21 @@
 #' @export
 #' @import glmnet
 #' @import SiZer
+#' @references
+#' Guo, P., Zeng, F., Hu, X., Zhang, D., Zhu, S., Deng, Y., & Hao, Y. (2015). Improved Variable 
+#' Selection Algorithm Using a LASSO-Type Penalty, with an Application to Assessing Hepatitis B 
+#' Infection Relevant Factors in Community Residents. PLoS One, 27;10(7):e0134151.
 #' @examples
 #' library(datasets)
 #' head(iris)
 #' X <- as.matrix(subset(iris,iris$Species!="setosa")[,-5])
 #' Y <- as.factor(ifelse(subset(iris,iris$Species!="setosa")[,5]=='versicolor',0,1))
-#' # Fitting a BRLasso Logistic regression model
+#' # Fitting a bootstrap ranking LASSO (BRLASSO) logistic regression model
 #' BRLasso.fit <- BRLasso(x=X, y=Y, B=2, Boots=10, kfold=10)
-#' # Variables selected
-#' BRLasso.fit$Var_selected
+#' # Variables selected by the BRLASSO model
+#' BRLasso.fit$var.selected
 #' # Coefficients of the selected variables
-#' BRLasso.fit$Asso  
+#' BRLasso.fit$var.coef  
 BRLasso=function(x, y, B=5, Boots=100, kfold=10){
     varx <- colnames(x)
     varx0 <- varx
@@ -84,6 +88,6 @@ for (ij in 1:B){
                          } else {
       RecordM2 <- RecordM2[, varx0]
                                 }
-    Myresult <- list(Var_selected=colnames(RecordM2), Asso=apply(RecordM2, 2, mean))
+    Myresult <- list(var.selected=colnames(RecordM2), var.coef=apply(RecordM2, 2, mean))
     return(Myresult)
 }
